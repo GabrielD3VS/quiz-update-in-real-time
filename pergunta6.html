@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Pergunta 6 - Kahoot</title>
+</head>
+<body>
+
+  <header>
+    <p>Jogador: <strong id="player-display"></strong> | Pontuação: <strong id="score-display">0</strong></p>
+  </header>
+
+  <hr>
+
+  <main>
+    <h2>Pergunta 6 de 7</h2>
+    <h3>Qual tag representa o título principal de uma página HTML?</h3>
+
+    <button onclick="responder(false)">A) &lt;head&gt;</button><br><br>
+    <button onclick="responder(false)">B) &lt;title&gt;</button><br><br>
+    <button onclick="responder(true)">C) &lt;h1&gt;</button><br><br>
+    <button onclick="responder(false)">D) &lt;header&gt;</button>
+  </main>
+
+  <script>
+    const player = localStorage.getItem('kahoot_player') || 'Convidado';
+    let score = parseInt(localStorage.getItem('kahoot_score') || '0');
+
+    document.getElementById('player-display').textContent = player;
+    document.getElementById('score-display').textContent = score;
+
+    function responder(correta) {
+      if (correta) {
+        score += 100;
+        localStorage.setItem('kahoot_score', score);
+        alert('Resposta Correta! +100 pontos');
+      } else {
+        alert('Resposta Incorreta!');
+      }
+      window.location.href = 'pergunta7.html';
+    }
+  </script>
+
+</body>
+</html>

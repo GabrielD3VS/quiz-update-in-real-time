@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Ranking - Kahoot</title>
+</head>
+<body>
+
+  <h1>Placar de Líderes (Ranking)</h1>
+
+  <h2>Sua Pontuação Final</h2>
+  <p>Jogador: <strong id="final-player"></strong></p>
+  <p>Pontos: <strong id="final-score">0</strong> pts</p>
+
+  <hr>
+
+  <h2>Top Jogadores</h2>
+  <ol id="lista-ranking">
+    <!-- O ranking será inserido via JavaScript -->
+  </ol>
+
+  <br>
+  <a href="index.html">Jogar Novamente</a>
+
+  <script>
+    const player = localStorage.getItem('kahoot_player') || 'Anônimo';
+    const score = parseInt(localStorage.getItem('kahoot_score') || '0');
+
+    document.getElementById('final-player').textContent = player;
+    document.getElementById('final-score').textContent = score;
+
+    // Busca o ranking antigo salvo
+    let ranking = JSON.parse(localStorage.getItem('kahoot_ranking_list') || '[]');
+
+    // Adiciona o novo resultado
+    ranking.push({ player: player, score: score });
+
+    // Ordena do maior para o menor
+    ranking.sort((a, b) => b.score - a.score);
+
+    // Salva a lista atualizada
+    localStorage.setItem('kahoot_ranking_list', JSON.stringify(ranking));
+
+    // Renderiza na tela
+    const lista = document.getElementById('lista-ranking');
+    ranking.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = `${item.player} - ${item.score} pontos`;
+      lista.appendChild(li);
+    });
+  </script>
+
+</body>
+</html>

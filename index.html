@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Kahoot Clone - Nickname</title>
+</head>
+<body>
+
+  <h1>Bem-vindo ao Quiz estilo Kahoot!</h1>
+  <p>Digite seu nickname para começar:</p>
+
+  <form id="form-inicio">
+    <label for="nickname">Nickname:</label>
+    <input type="text" id="nickname" required autocomplete="off">
+    <br><br>
+    <button type="submit">Iniciar Jogo</button>
+  </form>
+
+  <script>
+    document.getElementById('form-inicio').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const nick = document.getElementById('nickname').value.trim();
+      if (nick) {
+        // Salva o nickname e reinicia os pontos e progresso
+        localStorage.setItem('kahoot_player', nick);
+        localStorage.setItem('kahoot_score', '0');
+        
+        // Redireciona para a Pergunta 1
+        window.location.href = 'pergunta1.html';
+      }
+    });
+  </script>
+
+</body>
+</html>

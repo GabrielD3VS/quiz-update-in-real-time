@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Pergunta 2 - Kahoot</title>
+</head>
+<body>
+
+  <header>
+    <p>Jogador: <strong id="player-display"></strong> | Pontuação: <strong id="score-display">0</strong></p>
+  </header>
+
+  <hr>
+
+  <main>
+    <h2>Pergunta 2 de 7</h2>
+    <h3>Qual tecnologia é usada para dar estilo a páginas web?</h3>
+
+    <button onclick="responder(true)">A) CSS</button><br><br>
+    <button onclick="responder(false)">B) PHP</button><br><br>
+    <button onclick="responder(false)">C) SQL</button><br><br>
+    <button onclick="responder(false)">D) HTML</button>
+  </main>
+
+  <script>
+    const player = localStorage.getItem('kahoot_player') || 'Convidado';
+    let score = parseInt(localStorage.getItem('kahoot_score') || '0');
+
+    document.getElementById('player-display').textContent = player;
+    document.getElementById('score-display').textContent = score;
+
+    function responder(correta) {
+      if (correta) {
+        score += 100;
+        localStorage.setItem('kahoot_score', score);
+        alert('Resposta Correta! +100 pontos');
+      } else {
+        alert('Resposta Incorreta!');
+      }
+      window.location.href = 'pergunta3.html';
+    }
+  </script>
+
+</body>
+</html>

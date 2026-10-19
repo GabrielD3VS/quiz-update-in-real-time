@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Pergunta 5 - Kahoot</title>
+</head>
+<body>
+
+  <header>
+    <p>Jogador: <strong id="player-display"></strong> | Pontuação: <strong id="score-display">0</strong></p>
+  </header>
+
+  <hr>
+
+  <main>
+    <h2>Pergunta 5 de 7</h2>
+    <h3>Qual o significado da sigla HTML?</h3>
+
+    <button onclick="responder(true)">A) HyperText Markup Language</button><br><br>
+    <button onclick="responder(false)">B) HighText Machine Language</button><br><br>
+    <button onclick="responder(false)">C) Hyperlink Text Markdown Language</button><br><br>
+    <button onclick="responder(false)">D) Home Tool Markup Language</button>
+  </main>
+
+  <script>
+    const player = localStorage.getItem('kahoot_player') || 'Convidado';
+    let score = parseInt(localStorage.getItem('kahoot_score') || '0');
+
+    document.getElementById('player-display').textContent = player;
+    document.getElementById('score-display').textContent = score;
+
+    function responder(correta) {
+      if (correta) {
+        score += 100;
+        localStorage.setItem('kahoot_score', score);
+        alert('Resposta Correta! +100 pontos');
+      } else {
+        alert('Resposta Incorreta!');
+      }
+      window.location.href = 'pergunta6.html';
+    }
+  </script>
+
+</body>
+</html>
