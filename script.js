@@ -2,8 +2,8 @@
 import { createClient } from
     "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-const SUPABASE_URL = "SUA_PROJECT_URL";
-const SUPABASE_KEY = "SUA_PUBLISHABLE_KEY";
+const SUPABASE_URL = "https://ulaqohbfagajzrmxqlzd.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Q6qKuuMOXHqzzW12Vb8QlA_ujgzEDJq";
 
 const supabase = createClient(
     SUPABASE_URL,
@@ -75,10 +75,10 @@ function switchScreen(screenId) {
     document.querySelectorAll(
         '#screen-home, #screen-quiz, #screen-result'
     ).forEach(el => {
-        el.classList.add('hidden');
+        el.classList.add('is-hidden');
     });
 
-    document.getElementById(screenId).classList.remove('hidden');
+    document.getElementById(screenId).classList.remove('is-hidden');
 }
 
 async function renderLeaderboard() {
@@ -114,12 +114,7 @@ async function renderLeaderboard() {
 
         if (leaderboard.length === 0) {
             const emptyHTML = `
-                <div class="text-center py-6 border
-                    border-dashed border-slate-800 rounded-xl">
-                    <p class="text-slate-500 text-xs">
-                        Nenhum registro no placar ainda.
-                    </p>
-                </div>
+                <div class="empty-state">Nenhum registro no placar ainda.</div>
             `;
 
             if (listContainer) {
@@ -139,21 +134,12 @@ async function renderLeaderboard() {
                     const medal = ["🥇", "🥈", "🥉"][index];
 
                     return `
-                        <div class="flex justify-between items-center
-                            p-3 rounded-xl bg-slate-950/80
-                            border border-slate-800 text-sm">
-                            <div class="flex items-center gap-2
-                                truncate max-w-[70%]">
-                                <span class="w-5">
-                                    ${medal || `#${index + 1}`}
-                                </span>
-                                <span class="text-slate-200 truncate">
-                                    ${escapeHTML(item.name)}
-                                </span>
+                        <div class="score-row">
+                            <div class="score-player">
+                                <span class="score-medal">${medal || `#${index + 1}`}</span>
+                                <span class="score-name">${escapeHTML(item.name)}</span>
                             </div>
-                            <span class="text-indigo-400 text-xs font-bold">
-                                ${item.score} / ${item.total} pts
-                            </span>
+                            <span class="score-value">${item.score} / ${item.total} pts</span>
                         </div>
                     `;
                 })
@@ -163,19 +149,32 @@ async function renderLeaderboard() {
         if (adminListContainer) {
             adminListContainer.innerHTML = leaderboard
                 .map(item => `
-                    <div class="flex justify-between items-center
-                        p-2.5 rounded-xl bg-slate-950
-                        border border-slate-800 text-xs">
-                        <span class="text-slate-200 truncate">
+                    <div class="admin-score-row">
+                        <span class="admin-player-score">
                             ${escapeHTML(item.name)}
                             (${item.score}/${item.total})
                         </span>
-                        <span class="text-slate-500">
-                            #${item.id}
-                        </span>
+                        <div class="admin-row-actions">
+                            <span>#${escapeHTML(String(item.id))}</span>
+                            <button type="button"
+                                data-delete-id="${escapeHTML(String(item.id))}"
+                                class="delete-record"
+                                title="Excluir registro"
+                                aria-label="Excluir pontuação de ${escapeHTML(item.name)}">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18m-2 0-.9 14H5.9L5 6m4 0V4h6v2m-5 4v6m4-6v6"/></svg>
+                            </button>
+                        </div>
                     </div>
                 `)
                 .join("");
+
+            adminListContainer
+                .querySelectorAll("[data-delete-id]")
+                .forEach(button => {
+                    button.addEventListener("click", () => {
+                        adminDeleteSingleRecord(button.dataset.deleteId);
+                    });
+                });
         }
     } catch (error) {
         console.error("Erro ao carregar o ranking:", error);
@@ -230,15 +229,14 @@ function loadQuestion() {
     q.options.forEach((option, index) => {
         const btn = document.createElement('button');
 
-        btn.className =
-            "w-full text-left p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-indigo-500/60 hover:bg-slate-800/40 active:bg-slate-800/80 transition duration-200 text-sm font-medium text-slate-200 flex items-start gap-3 group";
+        btn.className = "answer-option";
 
         btn.innerHTML = `
-            <span class="flex-shrink-0 w-6 h-6 rounded-lg bg-slate-900 border border-slate-700 group-hover:border-indigo-500/50 group-hover:bg-indigo-500/10 text-slate-400 group-hover:text-indigo-400 flex items-center justify-center text-xs font-bold transition-colors">
+            <span class="answer-letter">
                 ${String.fromCharCode(65 + index)}
             </span>
 
-            <span class="pt-0.5 leading-relaxed">${escapeHTML(option)}</span>
+            <span class="answer-copy">${escapeHTML(option)}</span>
         `;
 
         btn.onclick = () => selectOption(index);
@@ -331,21 +329,21 @@ function resetHome() {
 function openAdminModal() {
     document.getElementById('admin-password').value = "";
 
-    document.getElementById('admin-auth-view').classList.remove('hidden');
-    document.getElementById('admin-panel-view').classList.add('hidden');
-    document.getElementById('admin-modal').classList.remove('hidden');
+    document.getElementById('admin-auth-view').classList.remove('is-hidden');
+    document.getElementById('admin-panel-view').classList.add('is-hidden');
+    document.getElementById('admin-modal').classList.remove('is-hidden');
 }
 
 function closeAdminModal() {
-    document.getElementById('admin-modal').classList.add('hidden');
+    document.getElementById('admin-modal').classList.add('is-hidden');
 }
 
 function verifyAdminPassword() {
     const pass = document.getElementById('admin-password').value;
 
     if (pass === "DROGAS") {
-        document.getElementById('admin-auth-view').classList.add('hidden');
-        document.getElementById('admin-panel-view').classList.remove('hidden');
+        document.getElementById('admin-auth-view').classList.add('is-hidden');
+        document.getElementById('admin-panel-view').classList.remove('is-hidden');
 
         renderLeaderboard();
     } else {
@@ -355,36 +353,49 @@ function verifyAdminPassword() {
     }
 }
 
-// Excluir um único registro pelo índice
-function adminDeleteSingleRecord(index) {
-    let leaderboard =
-        JSON.parse(localStorage.getItem('ml_quiz_leaderboard')) || [];
+async function adminDeleteSingleRecord(id) {
+    if (!confirm("Tem certeza que deseja excluir esta pontuação?")) return;
 
-    if (index >= 0 && index < leaderboard.length) {
-        const deletedName = leaderboard[index].name;
+    const { data, error } = await supabase
+        .from("quiz_scores")
+        .delete()
+        .eq("id", id)
+        .select("id");
 
-        leaderboard.splice(index, 1);
-
-        localStorage.setItem(
-            'ml_quiz_leaderboard',
-            JSON.stringify(leaderboard)
-        );
-
-        renderLeaderboard();
+    if (error) {
+        console.error("Erro ao excluir pontuação:", error);
+        alert("Não foi possível excluir. Verifique a política DELETE no Supabase.");
+        return;
     }
+
+    if (!data?.length) {
+        alert("Nenhum registro foi excluído. Verifique as permissões da tabela.");
+        return;
+    }
+
+    await renderLeaderboard();
 }
 
-function adminClearLeaderboard() {
+async function adminClearLeaderboard() {
     if (
         confirm(
             "Tem certeza absoluta que deseja apagar todo o histórico do placar? Esta ação não pode ser desfeita."
         )
     ) {
-        localStorage.removeItem('ml_quiz_leaderboard');
+        const { data, error } = await supabase
+            .from("quiz_scores")
+            .delete()
+            .not("id", "is", null)
+            .select("id");
 
-        renderLeaderboard();
+        if (error) {
+            console.error("Erro ao limpar o placar:", error);
+            alert("Não foi possível limpar o placar. Verifique a política DELETE no Supabase.");
+            return;
+        }
 
-        alert("Placar totalmente limpo com sucesso!");
+        await renderLeaderboard();
+        alert(`${data?.length ?? 0} registro(s) apagado(s).`);
     }
 }
 
