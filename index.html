@@ -1,35 +1,500 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Kahoot Clone - Nickname</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Machine Learning</title>
+    <!-- Tailwind CSS CDN para estilização responsiva e moderna -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Personalização leve da barra de rolagem */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.4);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.7);
+        }
+    </style>
 </head>
-<body>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4 font-sans">
 
-  <h1>Bem-vindo ao Quiz estilo Kahoot!</h1>
-  <p>Digite seu nickname para começar:</p>
-
-  <form id="form-inicio">
-    <label for="nickname">Nickname:</label>
-    <input type="text" id="nickname" required autocomplete="off">
-    <br><br>
-    <button type="submit">Iniciar Jogo</button>
-  </form>
-
-  <script>
-    document.getElementById('form-inicio').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const nick = document.getElementById('nickname').value.trim();
-      if (nick) {
-        // Salva o nickname e reinicia os pontos e progresso
-        localStorage.setItem('kahoot_player', nick);
-        localStorage.setItem('kahoot_score', '0');
+    <!-- Container Principal Card -->
+    <div class="w-full max-w-lg bg-slate-900 rounded-3xl shadow-2xl p-6 sm:p-8 border border-slate-800 backdrop-blur-sm relative overflow-hidden">
         
-        // Redireciona para a Pergunta 1
-        window.location.href = 'pergunta1.html';
-      }
-    });
-  </script>
+        <!-- Efeitos visuais de iluminação no fundo -->
+        <div class="absolute -top-24 -left-24 w-48 h-48 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
 
+        <!-- ================= TELA 1: INÍCIO E PLACAR ================= -->
+        <div id="screen-home" class="space-y-6 relative z-10">
+            <!-- Cabeçalho com Ícone de Engrenagem Admin -->
+            <div class="flex justify-between items-start">
+                <div class="space-y-1 text-left">
+                    <span class="inline-block bg-indigo-500/10 text-indigo-400 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-widest border border-indigo-500/20">
+                        Tech Quiz
+                    </span>
+                </div>
+                <button onclick="openAdminModal()" class="p-2 text-slate-400 hover:text-indigo-400 bg-slate-950/60 border border-slate-800 rounded-xl transition hover:border-slate-700" title="Painel Administrativo">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </button>
+            </div>
+            <div class="text-center space-y-2 -mt-2">
+                <h1 class="text-3xl font-extrabold tracking-tight text-white">Machine Learning</h1>
+                <p class="text-slate-400 text-sm">Digite seu nome, teste seus conhecimentos e conquiste o topo do ranking!</p>
+            </div>
+
+            <!-- Formulário de Entrada -->
+            <div class="space-y-3">
+                <div>
+                    <label for="username" class="block text-xs font-medium text-slate-300 mb-1.5 ml-1">Seu Nome / Apelido</label>
+                    <input type="text" id="username" placeholder="Ex: Ada Lovelace" 
+                        class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm transition-all text-slate-100 placeholder-slate-600">
+                </div>
+
+                <button onclick="startQuiz()" 
+                    class="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-indigo-600/25 active:scale-[0.99] text-sm text-white flex items-center justify-center gap-2">
+                    <span>Iniciar Quiz</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-m0 0l-7 7m7-7H3"></path></svg>
+                </button>
+            </div>
+
+            <!-- Divisória visual -->
+            <div class="relative my-4">
+                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-800"></div></div>
+                <div class="relative flex justify-center text-xs uppercase"><span class="bg-slate-900 px-3 text-slate-500 font-medium">Ranking Global</span></div>
+            </div>
+
+            <!-- Placar Geral (Visível Diretamente no Início) -->
+            <div class="space-y-3">
+                <div class="flex items-center justify-between px-1">
+                    <h2 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        Placar Geral
+                    </h2>
+                    <span id="total-players-count" class="text-xs text-slate-500">0 jogadores</span>
+                </div>
+
+                <!-- Lista de Placar com Rolagem Vertical -->
+                <div id="home-leaderboard-list" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+                    <!-- Os itens do placar serão renderizados dinamicamente via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TELA 2: QUIZ ================= -->
+        <div id="screen-quiz" class="hidden space-y-6 relative z-10">
+            <!-- Barra Superior de Progresso -->
+            <div class="space-y-2">
+                <div class="flex justify-between items-center text-xs text-slate-400 font-medium">
+                    <span id="question-progress">Questão 1 de 5</span>
+                    <span id="player-display" class="text-indigo-400 font-semibold truncate max-w-[150px]"></span>
+                </div>
+                <!-- Barra visual de progresso -->
+                <div class="w-full bg-slate-950 rounded-full h-1.5 overflow-hidden border border-slate-800">
+                    <div id="progress-bar" class="bg-indigo-500 h-full transition-all duration-300 w-0"></div>
+                </div>
+            </div>
+
+            <!-- Pergunta e Opções -->
+            <div class="space-y-5">
+                <h2 id="question-text" class="text-lg sm:text-xl font-bold leading-snug text-slate-100"></h2>
+                
+                <div id="options-container" class="space-y-3">
+                    <!-- As opções serão injetadas aqui via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TELA 3: RESULTADO ================= -->
+        <div id="screen-result" class="hidden text-center space-y-6 relative z-10">
+            <div class="space-y-2">
+                <div class="inline-flex p-3 bg-indigo-500/10 rounded-2xl text-indigo-400 border border-indigo-500/20 mb-2">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h2 class="text-2xl font-extrabold text-white">Quiz Finalizado!</h2>
+                <p class="text-slate-400 text-sm">Sua pontuação foi registrada automaticamente no placar.</p>
+            </div>
+
+            <!-- Cartão com a pontuação calculada dinamicamente -->
+            <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-1 shadow-inner">
+                <span class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Sua Pontuação Final</span>
+                <div id="final-score" class="text-4xl font-black text-indigo-400">0 / 0</div>
+                <p id="feedback-message" class="text-xs text-slate-400 pt-2"></p>
+            </div>
+
+            <!-- Ações -->
+            <div class="space-y-2.5">
+                <button onclick="resetHome()" 
+                    class="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-indigo-600/20 text-sm text-white">
+                    Jogar Novamente
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal Admin (Senha e Painel) -->
+    <div id="admin-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md space-y-4 shadow-2xl relative max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    Painel Administrativo
+                </h3>
+                <button onclick="closeAdminModal()" class="text-slate-500 hover:text-slate-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <!-- Estado 1: Inserir Senha -->
+            <div id="admin-auth-view" class="space-y-3">
+                <p class="text-xs text-slate-400">Digite a senha de administrador para acessar os controles (Senha padrão: <code class="bg-slate-950 px-1.5 py-0.5 rounded text-indigo-400 font-mono">1234</code>)</p>
+                <div>
+                    <input type="password" id="admin-password" placeholder="Senha..." 
+                        class="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 focus:outline-none focus:border-indigo-500 text-sm text-slate-100 placeholder-slate-600">
+                </div>
+                <button onclick="verifyAdminPassword()" 
+                    class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 font-semibold rounded-xl transition duration-200 text-sm text-white">
+                    Entrar
+                </button>
+            </div>
+
+            <!-- Estado 2: Painel de Controles -->
+            <div id="admin-panel-view" class="hidden space-y-4 flex-1 overflow-hidden flex flex-col">
+                <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800 space-y-1">
+                    <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Gerenciamento do Placar</span>
+                    <p class="text-xs text-slate-500">Exclua pontuações individuais ou limpe todo o histórico de uma só vez.</p>
+                </div>
+
+                <!-- Lista de Jogadores no Admin para Exclusão Individual -->
+                <div class="space-y-2 flex-1 overflow-y-auto pr-1" id="admin-leaderboard-list">
+                    <!-- Itens renderizados dinamicamente -->
+                </div>
+
+                <!-- Ações Globais -->
+                <button onclick="adminClearLeaderboard()" 
+                    class="w-full py-3 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 font-semibold rounded-xl transition duration-200 text-sm flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    <span>Limpar Todo o Placar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =========================================================================
+        // BANCO DE PERGUNTAS (DYNAMIC QUESTIONS ARRAY)
+        // Adicione, remova ou altere perguntas aqui à vontade. 
+        // O sistema calcula tudo sozinho (progresso, total de questões e pontuação)!
+        // =========================================================================
+        const questions = [
+            {
+                question: "O que é Aprendizado Supervisionado?",
+                options: [
+                    "Um modelo treinado com dados que possuem rótulos (entradas e saídas esperadas).",
+                    "Um algoritmo que aprende totalmente sozinho sem nenhum dado prévio.",
+                    "Um método exclusivo para deletar dados inconsistentes em bancos de dados.",
+                    "Uma técnica restrita à robótica industrial pesada."
+                ],
+                correct: 0
+            },
+            {
+                question: "Qual algoritmo é mais indicado para tarefas de Classificação Binária?",
+                options: [
+                    "Regressão Linear",
+                    "Regressão Logística",
+                    "K-Means Clustering",
+                    "Análise de Componentes Principais (PCA)"
+                ],
+                correct: 1
+            },
+            {
+                question: "O que caracteriza o problema de 'Overfitting'?",
+                options: [
+                    "O modelo é simples demais e erra tanto nos dados de treino quanto nos de teste.",
+                    "O modelo memorizou os dados de treino e falha ao tentar generalizar dados novos.",
+                    "O computador para de responder por excesso de uso de memória RAM.",
+                    "A base de dados contém poucas variáveis para análise."
+                ],
+                correct: 1
+            },
+            {
+                question: "Qual das opções é uma aplicação típica de Aprendizado Não Supervisionado?",
+                options: [
+                    "Prever a temperatura de amanhã em graus Celsius.",
+                    "Classificar e-mails como 'Spam' ou 'Não Spam'.",
+                    "Agrupar clientes por comportamento de compra semelhante (Clustering).",
+                    "Detectar placas de trânsito em imagens com caixas delimitadoras."
+                ],
+                correct: 2
+            },
+            {
+                question: "Qual o objetivo do algoritmo de 'Gradiente Descendente' (Gradient Descent)?",
+                options: [
+                    "Minimizar a função de perda (custo) ajustando iterativamente os parâmetros do modelo.",
+                    "Aumentar o tamanho do conjunto de dados sinteticamente.",
+                    "Converter dados de texto em imagens digitais.",
+                    "Eliminar vírus e malware em sistemas operacionais."
+                ],
+                correct: 0
+            }
+        ];
+
+        // Variáveis Globais de Estado
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let currentUserName = "";
+
+        // Inicialização ao carregar a página
+        window.addEventListener('DOMContentLoaded', () => {
+            renderLeaderboard();
+        });
+
+        // Função para alternar telas ativas
+        function switchScreen(screenId) {
+            document.querySelectorAll('#screen-home, #screen-quiz, #screen-result').forEach(el => {
+                el.classList.add('hidden');
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        // Renderiza o Placar Geral ordenado no localStorage (Início e Admin)
+        function renderLeaderboard() {
+            const listContainer = document.getElementById('home-leaderboard-list');
+            const adminListContainer = document.getElementById('admin-leaderboard-list');
+            const playersCountEl = document.getElementById('total-players-count');
+            
+            // Busca dados armazenados ou lista vazia
+            let leaderboard = JSON.parse(localStorage.getItem('ml_quiz_leaderboard')) || [];
+
+            // Atualiza contagem de jogadores
+            if (playersCountEl) {
+                playersCountEl.textContent = `${leaderboard.length} ${leaderboard.length === 1 ? 'registro' : 'registros'}`;
+            }
+
+            if (leaderboard.length === 0) {
+                const emptyHTML = `
+                    <div class="text-center py-6 border border-dashed border-slate-800 rounded-xl bg-slate-950/40">
+                        <p class="text-slate-500 text-xs">Nenhum registro no placar ainda.</p>
+                        <p class="text-slate-600 text-[11px] mt-0.5">Seja o primeiro a pontuar!</p>
+                    </div>
+                `;
+                listContainer.innerHTML = emptyHTML;
+                if (adminListContainer) adminListContainer.innerHTML = emptyHTML;
+                return;
+            }
+
+            // Injeta os registros no placar principal
+            listContainer.innerHTML = leaderboard.map((item, index) => {
+                let badge = `<span class="text-slate-500 font-mono text-xs w-5 font-bold">#${index + 1}</span>`;
+                if (index === 0) badge = `<span class="text-amber-400 text-xs w-5">🥇</span>`;
+                if (index === 1) badge = `<span class="text-slate-300 text-xs w-5">🥈</span>`;
+                if (index === 2) badge = `<span class="text-amber-600 text-xs w-5">🥉</span>`;
+
+                return `
+                    <div class="flex justify-between items-center p-3 rounded-xl bg-slate-950/80 border border-slate-800/80 hover:border-slate-700 transition duration-150 text-sm">
+                        <div class="flex items-center space-x-2.5 truncate max-w-[70%]">
+                            ${badge}
+                            <span class="font-medium text-slate-200 truncate">${escapeHTML(item.name)}</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-2.5 py-0.5 rounded-lg text-xs font-bold">
+                                ${item.score} / ${item.total || questions.length} pts
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Injeta a lista com controles de exclusão no modal Admin
+            if (adminListContainer) {
+                adminListContainer.innerHTML = leaderboard.map((item, index) => `
+                    <div class="flex justify-between items-center p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs">
+                        <div class="flex items-center space-x-2 truncate">
+                            <span class="font-bold text-slate-500">#${index + 1}</span>
+                            <span class="font-medium text-slate-200 truncate">${escapeHTML(item.name)}</span>
+                            <span class="text-indigo-400 font-semibold">(${item.score}/${item.total || questions.length})</span>
+                        </div>
+                        <button onclick="adminDeleteSingleRecord(${index})" class="p-1.5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition" title="Excluir este registro">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Inicia o Quiz
+        function startQuiz() {
+            const nameInput = document.getElementById('username').value.trim();
+            if (!nameInput) {
+                alert("Por favor, digite seu nome ou apelido para começar o quiz!");
+                return;
+            }
+
+            if (questions.length === 0) {
+                alert("Nenhuma pergunta cadastrada no quiz!");
+                return;
+            }
+
+            currentUserName = nameInput;
+            currentQuestionIndex = 0;
+            score = 0;
+            
+            document.getElementById('player-display').textContent = currentUserName;
+            switchScreen('screen-quiz');
+            loadQuestion();
+        }
+
+        // Carrega a Pergunta Atual
+        function loadQuestion() {
+            const q = questions[currentQuestionIndex];
+            const total = questions.length;
+
+            document.getElementById('question-progress').textContent = `Questão ${currentQuestionIndex + 1} de ${total}`;
+            document.getElementById('question-text').textContent = q.question;
+            
+            const progressPercent = ((currentQuestionIndex) / total) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = "";
+
+            q.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-indigo-500/60 hover:bg-slate-800/40 active:bg-slate-800/80 transition duration-200 text-sm font-medium text-slate-200 flex items-start gap-3 group";
+                
+                btn.innerHTML = `
+                    <span class="flex-shrink-0 w-6 h-6 rounded-lg bg-slate-900 border border-slate-700 group-hover:border-indigo-500/50 group-hover:bg-indigo-500/10 text-slate-400 group-hover:text-indigo-400 flex items-center justify-center text-xs font-bold transition-colors">
+                        ${String.fromCharCode(65 + index)}
+                    </span>
+                    <span class="pt-0.5 leading-relaxed">${escapeHTML(option)}</span>
+                `;
+                
+                btn.onclick = () => selectOption(index);
+                container.appendChild(btn);
+            });
+        }
+
+        // Processa a seleção da opção
+        function selectOption(selectedIndex) {
+            const q = questions[currentQuestionIndex];
+            if (selectedIndex === q.correct) {
+                score++;
+            }
+
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        // Finaliza o quiz e salva no localStorage
+        function finishQuiz() {
+            document.getElementById('progress-bar').style.width = `100%`;
+
+            const total = questions.length;
+            saveScore(currentUserName, score, total);
+            
+            document.getElementById('final-score').textContent = `${score} / ${total}`;
+            
+            const percentage = (score / total) * 100;
+            const feedbackEl = document.getElementById('feedback-message');
+            if (percentage === 100) {
+                feedbackEl.textContent = "Excelente! Você domina Machine Learning! 🎉";
+            } else if (percentage >= 70) {
+                feedbackEl.textContent = "Muito bom! Você tem ótimos conhecimentos na área. 🚀";
+            } else if (percentage >= 40) {
+                feedbackEl.textContent = "Bom esforço! Continue estudando os conceitos. 📚";
+            } else {
+                feedbackEl.textContent = "Não desanime! Revise os conceitos e tente novamente. 💪";
+            }
+
+            renderLeaderboard();
+            switchScreen('screen-result');
+        }
+
+        // Salva a pontuação no localStorage e ordena
+        function saveScore(name, finalScore, totalQuestions) {
+            let leaderboard = JSON.parse(localStorage.getItem('ml_quiz_leaderboard')) || [];
+            
+            leaderboard.push({ 
+                name: name, 
+                score: finalScore, 
+                total: totalQuestions,
+                date: new Date().toLocaleDateString('pt-BR') 
+            });
+
+            leaderboard.sort((a, b) => b.score - a.score);
+            localStorage.setItem('ml_quiz_leaderboard', JSON.stringify(leaderboard));
+        }
+
+        // Reseta para a tela inicial
+        function resetHome() {
+            document.getElementById('username').value = "";
+            renderLeaderboard();
+            switchScreen('screen-home');
+        }
+
+        // Funções do Painel Administrativo com Senha
+        function openAdminModal() {
+            document.getElementById('admin-password').value = "";
+            document.getElementById('admin-auth-view').classList.remove('hidden');
+            document.getElementById('admin-panel-view').classList.add('hidden');
+            document.getElementById('admin-modal').classList.remove('hidden');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').classList.add('hidden');
+        }
+
+        function verifyAdminPassword() {
+            const pass = document.getElementById('admin-password').value;
+            if (pass === "DROGAS") {
+                document.getElementById('admin-auth-view').classList.add('hidden');
+                document.getElementById('admin-panel-view').classList.remove('hidden');
+                renderLeaderboard();
+            } else {
+                alert("Senha incorreta! A senha padrão é 1234.");
+                document.getElementById('admin-password').value = "";
+            }
+        }
+
+        // Excluir um único registro pelo índice
+        function adminDeleteSingleRecord(index) {
+            let leaderboard = JSON.parse(localStorage.getItem('ml_quiz_leaderboard')) || [];
+            if (index >= 0 && index < leaderboard.length) {
+                const deletedName = leaderboard[index].name;
+                leaderboard.splice(index, 1);
+                localStorage.setItem('ml_quiz_leaderboard', JSON.stringify(leaderboard));
+                renderLeaderboard();
+            }
+        }
+
+        // Limpar todo o placar
+        function adminClearLeaderboard() {
+            if (confirm("Tem certeza absoluta que deseja apagar todo o histórico do placar? Esta ação não pode ser desfeita.")) {
+                localStorage.removeItem('ml_quiz_leaderboard');
+                renderLeaderboard();
+                alert("Placar totalmente limpo com sucesso!");
+            }
+        }
+
+        // Utilitário para escapar caracteres e evitar XSS
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+    </script>
 </body>
 </html>
