@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Nabla:EDPT@26&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist+Pixel&display=swap');
+
 :root {
     color-scheme: dark;
     font-family: "Trebuchet MS", "Segoe UI", sans-serif;
@@ -11,12 +14,14 @@
     --muted: #98a5bd;
     --quiet: #66758f;
     --accent: #7c8cff;
-    --accent-bright: #526df5;
+    --accent-bright: #caf552;
     --cyan: #54d4d1;
     --danger: #ff777f;
 }
 
 * {
+    margin: 0px;
+    padding: 0px;
     box-sizing: border-box;
 }
 
@@ -24,9 +29,11 @@ body {
     min-width: 320px;
     min-height: 100vh;
     margin: 0;
-    display: grid;
-    place-items: center;
-    row-gap: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
     padding: 14px 18px;
     color: var(--text);
     background:
@@ -36,17 +43,17 @@ body {
 }
 
 body::before {
-  content: "";
-  position: fixed;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  z-index: -1;
-  pointer-events: none;
-  background-image: radial-gradient(rgba(255, 252, 239, 0.3) 1.5%, transparent 1%);
-  background-size: 100px 100px;
-  transform: rotate(45deg); 
+    content: "";
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    z-index: -1;
+    pointer-events: none;
+    background-image: radial-gradient(rgba(255, 252, 239, 0.3) 1.5%, transparent 0.6%);
+    background-size: 100px 100px;
+    transform: rotate(45deg);
 }
 
 .quiz-header {
@@ -55,8 +62,14 @@ body::before {
     justify-content: center;
 }
 
-.quiz-header h1 {
-    margin: 0;
+#main-title {
+    font-family: "Geist Pixel", sans-serif;
+    font-size: 5em;
+    background: linear-gradient(#f8f8f8 30%, #d4c554);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
 }
 
 button,
@@ -92,33 +105,14 @@ svg {
     max-height: calc(100vh - 84px);
     overflow: hidden;
     padding: 20px 30px;
-    border: 1px solid rgba(146, 165, 203, 0.16);
-    border-radius: 22px;
-    background: linear-gradient(145deg, rgba(19, 28, 49, 0.98), rgba(13, 22, 40, 0.99));
+    border-radius: 2px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1));
     box-shadow: 0 28px 80px rgba(0, 0, 0, 0.38);
+    border: 1px solid rgba(255, 255, 255, 0.56);
+    backdrop-filter: blur(1.5px);
 }
 
-.quiz-glow {
-    position: absolute;
-    z-index: -1;
-    width: 230px;
-    height: 180px;
-    pointer-events: none;
-    filter: blur(55px);
-    opacity: 0.14;
-}
 
-.quiz-glow-top {
-    top: -115px;
-    left: -95px;
-    background: #576bf3;
-}
-
-.quiz-glow-bottom {
-    right: -120px;
-    bottom: -110px;
-    background: #27aeb0;
-}
 
 .screen {
     position: relative;
@@ -127,7 +121,7 @@ svg {
 
 .screen-home {
     display: flex;
-    max-height: calc(100vh - 144px);
+    max-height: calc(100vh - 200px);
     flex-direction: column;
 }
 
@@ -136,7 +130,7 @@ svg {
 }
 
 .home-header,
-.leaderboard-heading,
+.ererboard-heading,
 .quiz-progress-labels,
 .modal-header,
 .score-row,
@@ -152,9 +146,9 @@ svg {
     align-items: center;
     min-height: 25px;
     padding: 4px 11px;
-    border: 1px solid rgba(124, 140, 255, 0.24);
-    border-radius: 99px;
-    color: #a7b1ff;
+    border: 1px solid rgba(211, 211, 211, 0.668);
+    border-radius: 2px;
+    color: #fff396;
     background: rgba(82, 109, 245, 0.1);
     font-size: 11px;
     font-weight: 700;
@@ -184,6 +178,7 @@ svg {
 .home-intro {
     margin: 14px 0 16px;
     text-align: center;
+    font-family:'Geist Pixel';
 }
 
 .home-intro h1,
@@ -221,17 +216,17 @@ svg {
     width: 100%;
     min-height: 46px;
     padding: 0 14px;
-    border: 1px solid var(--line);
-    border-radius: 11px;
+    border: 1px solid whitesmoke;
+    border-radius: 2px;
     color: var(--text);
-    background: var(--panel-deep);
+    background: rgba(20, 20, 20, 0.67);
     font-size: 13px;
     transition: border-color 160ms ease, box-shadow 160ms ease;
 }
 
 .start-form input::placeholder,
 .admin-auth input::placeholder {
-    color: #53617a;
+    color: #696969;
 }
 
 .start-form input:focus,
@@ -364,7 +359,7 @@ svg {
     gap: 12px;
     padding: 10px 12px;
     border: 1px solid var(--line);
-    border-radius: 10px;
+    border-radius: 2px;
     background: rgba(7, 12, 26, 0.58);
     font-size: 12px;
 }
@@ -385,7 +380,7 @@ svg {
 .score-name,
 .admin-player-score {
     overflow: hidden;
-    color: #e1e7f1;
+    color: whitesmoke;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
@@ -761,6 +756,7 @@ svg {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {
